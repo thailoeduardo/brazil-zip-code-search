@@ -1,47 +1,49 @@
-import { useEffect, useState } from "react";
-import reactLogo from "./assets/react.svg";
-import viteLogo from "/vite.svg";
-import axios from "axios";
+import { useState } from "react";
+// import reactLogo from "./assets/react.svg";
+// import viteLogo from "/vite.svg";
+import api from "./services/api";
+import Text from "./components/Text";
 
-// interface zipCode {}= string;
+// // interface zipCode {}= string;
 
-interface infoAdreess {
-	bairro: string;
-	cep: string;
-	complemento: string;
-	ddd: string;
-	gia: string;
-	ibge: string;
-	localidade: string;
-	logradouro: string;
-	siafi: string;
-	uf: string;
+interface InfoZipCode {
+  bairro?: string;
+  cep?: string;
+  complemento?: string;
+  // ddd?: string;
+  // gia?: string;
+  // ibge?: string;
+  localidade?: string;
+  logradouro?: string;
+  // siafi?: string;
+  uf?: string;
 }
 
 function App() {
   const [zipCode, setZipCode] = useState("");
-  const [addreess, setAddreess] = useState({});
+  const [contentZipCode, setContentZipCode] = useState<InfoZipCode>({});
 
-	//
-	const getAddressApi = (cep: string) => {
-		axios
-		.get(`https://viacep.com.br/ws/${cep}/json/`)
-		.then((response) => setAddreess(response.data))
-		.catch((err) => {
-			console.error("ops! ocorreu um erro" + err);
-		});
-	}
-
-  const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
-    // Preventing the page from reloading
+  const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
 
-		const teste = getAddressApi(zipCode)
+    if (zipCode === "") {
+      alert("CEP não preenchido!");
+      setZipCode("");
 
-    console.log(zipCode);
-    console.log(addreess);
+      return;
+    }
 
-		
+    try {
+      const responseZipCode = await api.get(`${zipCode}/json/`);
+
+      setContentZipCode(responseZipCode.data);
+
+      setZipCode("");
+    } catch (error) {
+      alert("Error ao buscar CEP");
+
+      setZipCode("");
+    }
   };
 
   return (
@@ -51,7 +53,7 @@ function App() {
           onSubmit={handleSubmit}
           action=""
           method="post"
-          className="flex gap-3 border p-3"
+          className="flex gap-3 p-3 "
         >
           <input
             id="email-address"
@@ -59,38 +61,33 @@ function App() {
             type="text"
             autoComplete=""
             required
-            className="relative block w-72 border-0 p-1.5 text-gray-900 ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:z-10 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
+            className="relative block w-72 border-0 bg-[#e8e8e8] rounded-lg p-3 text-[#090909]"
             placeholder="Digite o CEP"
             value={zipCode}
             onChange={(e) => setZipCode(e.target.value)}
           />
+
           <button
             type="submit"
-            className="group relative flex justify-center bg-indigo-600 py-2 px-3 text-sm font-semibold text-white hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
+            className="flex justify-center items-center py-2 px-3 rounded-lg bg-[#e8e8e8] text-[#090909]"
           >
-            Pesquisar
+            Search
           </button>
         </form>
 
-				<div className="w-1/2 md:max-w-7xl border p-3 mt-5">
-				<p>
-				<strong>Rua:</strong> Lorem ipsum dolor sit amet consectetur
-				adipisicing elit. Dolorum, quo!
-				</p>
-				<p>
-				<strong>Estado:</strong> Lorem ipsum dolor sit amet consectetur
-				adipisicing elit. Dolorum, quo!
-				</p>
-				<p>
-				<strong>País:</strong> Lorem ipsum dolor sit amet consectetur
-				adipisicing elit. Dolorum, quo!
-				</p>
-				<p>
-				<strong>Logradouro:</strong> Lorem ipsum dolor sit amet consectetur
-				adipisicing elit. Dolorum, quo!
-				</p>
-				</div>			
-       
+        {Object.keys(contentZipCode).length > 0 && (
+          <div className="w-1/2 md:max-w-7xl border p-3 mt-5">
+            <Text title="CEP" description={contentZipCode.cep} />
+            <Text title="Logradouro" description={contentZipCode.logradouro} />
+            <Text title="Bairro" description={contentZipCode.bairro} />
+            <Text title="Localidade" description={contentZipCode.localidade} />
+            <Text title="Estado" description={contentZipCode.uf} />
+            <Text
+              title="Complemento"
+              description={contentZipCode.complemento}
+            />
+          </div>
+        )}
       </div>
     </>
   );
