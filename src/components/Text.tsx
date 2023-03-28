@@ -1,13 +1,18 @@
-
 type PropsText = {
-	title: string;
-	description?: string;
-}
+  title: string;
+  description?: string;
+};
 
-export default function Text(props : PropsText) {
-	return (
-		<p>
-			<strong>{props.title}:</strong> {props.description}
-		</p>
-	)
+export default function Text(props: PropsText) {
+  return (
+    <p className="text-center">
+      <span>
+        <strong>{props.title}: </strong>
+      </span>
+
+      {/* <br /> */}
+
+      <span className="text-center">{props.description}</span>
+    </p>
+  );
 }

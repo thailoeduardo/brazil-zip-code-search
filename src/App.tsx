@@ -1,33 +1,32 @@
 import { useState } from "react";
 // import reactLogo from "./assets/react.svg";
-// import viteLogo from "/vite.svg";
+import appLogo from "./assets/map-maker.svg";
 import api from "./services/api";
 import Text from "./components/Text";
+import MessageError from "./components/MessageError";
 
 // // interface zipCode {}= string;
 
 interface InfoZipCode {
   bairro?: string;
   cep?: string;
-  complemento?: string;
-  // ddd?: string;
-  // gia?: string;
-  // ibge?: string;
   localidade?: string;
   logradouro?: string;
-  // siafi?: string;
   uf?: string;
 }
 
 function App() {
   const [zipCode, setZipCode] = useState("");
+  const [ErrorZipCode, setErrorZipCode] = useState(false);
+  const [messageErrorZipCode, setMessageErrorZipCode] = useState("");
   const [contentZipCode, setContentZipCode] = useState<InfoZipCode>({});
 
   const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
 
     if (zipCode === "") {
-      alert("CEP não preenchido!");
+      setErrorZipCode(true);
+      setMessageErrorZipCode("CEP não preenchido!");
       setZipCode("");
 
       return;
@@ -37,11 +36,11 @@ function App() {
       const responseZipCode = await api.get(`${zipCode}/json/`);
 
       setContentZipCode(responseZipCode.data);
-
+      setErrorZipCode(false);
       setZipCode("");
     } catch (error) {
-      alert("Error ao buscar CEP");
-
+      setErrorZipCode(true);
+      setMessageErrorZipCode("CEP não encontrado!");
       setZipCode("");
     }
   };
@@ -49,6 +48,10 @@ function App() {
   return (
     <>
       <div className="flex flex-col justify-center items-center w-full h-screen">
+        <img src={appLogo} alt="" width={100} height={100} className="mb-5" />
+
+        {ErrorZipCode == true && <MessageError message={messageErrorZipCode} />}
+
         <form
           onSubmit={handleSubmit}
           action=""
@@ -60,7 +63,6 @@ function App() {
             name="zipcode"
             type="text"
             autoComplete=""
-            required
             className="relative block w-72 border-0 bg-[#e8e8e8] rounded-lg p-3 text-[#090909]"
             placeholder="Digite o CEP"
             value={zipCode}
@@ -69,7 +71,7 @@ function App() {
 
           <button
             type="submit"
-            className="flex justify-center items-center py-2 px-3 rounded-lg bg-[#e8e8e8] text-[#090909]"
+            className="flex justify-center items-center py-2 px-10 rounded-lg bg-[#e8e8e8] text-[#090909]"
           >
             Search
           </button>
@@ -82,10 +84,6 @@ function App() {
             <Text title="Bairro" description={contentZipCode.bairro} />
             <Text title="Localidade" description={contentZipCode.localidade} />
             <Text title="Estado" description={contentZipCode.uf} />
-            <Text
-              title="Complemento"
-              description={contentZipCode.complemento}
-            />
           </div>
         )}
       </div>
