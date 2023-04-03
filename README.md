@@ -2,8 +2,8 @@
 
 <div align="center">
 
-  [![Demo](https://img.shields.io/badge/-live%20project-brightgreen?style=for-the-badge)](https://)
-  [![Report Bug](https://img.shields.io/badge/-Report%20Bug-critical?style=for-the-badge)](https://)
+  [![Demo](https://img.shields.io/badge/-live%20project-brightgreen?style=for-the-badge)](https://brazil-zip-code-search.netlify.app/)
+ <!-- [![Report Bug](https://img.shields.io/badge/-Report%20Bug-critical?style=for-the-badge)](https://) -->
 
   [![GitHub license](https://img.shields.io/github/license/thailoeduardo/template-for-projects?style=for-the-badge)](https://github.com/thailoeduardo/template-for-projects/blob/master/LICENSE)
   [![GitHub stars](https://img.shields.io/github/stars/thailoeduardo/template-for-projects?style=for-the-badge)](https://github.com/thailoeduardo/template-for-projects/stargazers)
